@@ -1,0 +1,8 @@
+syntax: glob
+*.pyc
+*.swp
+*.swo
+*.csv
+__pycache__
+*.sqlite3
+beermanager/media/*
