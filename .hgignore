@@ -5,4 +5,4 @@ syntax: glob
 *.csv
 __pycache__
 *.sqlite3
-beermanager/media/*
+mriquiz/media/*

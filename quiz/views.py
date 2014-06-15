@@ -5,42 +5,70 @@ from django.views import generic
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 
-from quiz.models import BrainStructure
+from quiz.models import BrainStructure, generate_random_queue
 from quiz.forms import QuizSubmitForm
 
 class QuizView(generic.FormView):
     template_name = "quiz.html"
-    form_class = "QuizSubmitForm"
-    success_url = reverse('quiz_view')
+    form_class = QuizSubmitForm
 
     def get_context_data(self, **kwargs):
         context = generic.TemplateView.get_context_data(self, **kwargs)
 
         if not 'quiz_queue' in self.request.session:
-            self.request.session['quiz_queue'] = BrainStructure.generate_random_queue()
+            self.request.session['quiz_queue'] = generate_random_queue()
             self.request.session['score'] = 0
             self.request.session['total'] = 0
 
-        current_structure = self.request.session['quiz_queue'].pop()
+        show_score = False
 
-        context['current_structure'] = current_structure
-        self.request.session['current_structure'] = current_structure
+        try:
+            current_structure_id = self.request.session['quiz_queue'][0]
+        except IndexError:
+            show_score = True
+
+        if show_score:
+            context['current_structure'] = None
+            context['current_mriset'] = None
+            context['show_score'] = show_score
+        else:
+            current_structure = BrainStructure.objects.get(pk=current_structure_id)
+
+            context['current_structure'] = current_structure
+            context['current_mriset'] = current_structure.mri_sets.order_by('?').first()
+            context['show_score'] = show_score
+
+            if self.request.method == 'GET':
+                # don't change structure on form submit
+                self.request.session['current_structure'] = current_structure_id
+
+        return context
 
     def form_valid(self, form):
         if 'current_structure' in self.request.session:
-            right_answer = self.request.session['current_structure'].latin_name
+            current_structure = BrainStructure.objects.get(
+                pk=self.request.session['current_structure'])
 
-            if form.cleaned_data['answer'] == right_answer:
+            if str(form.cleaned_data['answer']) == str(current_structure.latin_name):
                 messages.success(self.request, "Heel goed! U heeft het juiste antwoord gegeven!")
                 self.request.session['score'] += 1
                 self.request.session['total'] += 1
             else:
-                messages.error(self.request, "Helaas... Dit was niet het juiste antwoord.")
+                messages.error(self.request, "Helaas... Dit was niet het juiste antwoord. Het juiste antwoord was {}".format(current_structure.latin_name))
                 self.request.session['total'] += 1
 
+            self.request.session['quiz_queue'].pop(0)
+
         return generic.FormView.form_valid(self, form)
+
+    def get_success_url(self):
+        return reverse('quiz_view')
+
+class RestartView(generic.RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        self.request.session['quiz_queue'] = generate_random_queue()
+        self.request.session['score'] = 0
+        self.request.session['total'] = 0
+
+        return reverse('quiz_view')
         
-
-
-
-
