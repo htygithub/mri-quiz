@@ -17,7 +17,8 @@ class QuizView(generic.FormView):
         context = generic.TemplateView.get_context_data(self, **kwargs)
 
         print(self.request.session)
-        if not 'quiz_queue' in self.request.session:
+        if (not 'quiz_queue' in self.request.session or 
+            'restart' in self.request.GET):
             self.request.session['quiz_queue'] = generate_random_queue()
             self.request.session['score'] = 0
             self.request.session['total'] = 0

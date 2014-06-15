@@ -35,7 +35,7 @@ class BrainStructure(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.latin_name
+        return "{} ({})".format(self.latin_name, self.english_name)
 
 class MRISet(models.Model):
     structure = models.ForeignKey(BrainStructure, related_name="mri_sets")

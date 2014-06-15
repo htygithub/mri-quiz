@@ -5,6 +5,9 @@
 <p>
     Score: {{ request.session.score }} / {{ request.session.total }}
 </p>
+<p>
+    <a class="btn btn-primary" href="{% url "restart" %}">Restart</a>
+</p>
 {% else %}
 <form method="post" action="{% url "quiz_view" %}">
 <h2>MRI-scan</h2>
