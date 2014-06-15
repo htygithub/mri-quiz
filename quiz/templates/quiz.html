@@ -1,0 +1,25 @@
+{% extends "master.html" %}
+
+{% block content %}
+{% if show_score %}
+<p>
+    Score: {{ request.session.score }} / {{ request.session.total }}
+</p>
+{% else %}
+<form method="post" action="{% url "quiz_view" %}">
+<h2>MRI-scan</h2>
+<p>
+    <img src="{{ MEDIA_URL }}{{ current_mriset.image1 }}" alt="MRI Image 1" />
+    <img src="{{ MEDIA_URL }}{{ current_mriset.image2 }}" alt="MRI Image 2" />
+    <img src="{{ MEDIA_URL }}{{ current_mriset.image3 }}" alt="MRI Image 3" />
+</p>
+<h2>Selecteer de juiste bijbehorende structuur</h2>
+{{ form }}
+
+<p>
+    <input type="submit" value="Check antwoord" />
+</p>
+{% csrf_token %}
+</form>
+{% endif %}
+{% endblock %}
