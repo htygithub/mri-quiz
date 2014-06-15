@@ -22,13 +22,7 @@
 
             {% if messages %}
             {% for message in messages %}
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="alert alert-danger">
-                {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <div class="alert alert-success">
-                {% else %}
-                <div class="alert alert-info">
-                {% endif %}
+                <div class="alert {{ message.tags }}">
                     {{ message }}
                 </div>
             {% endfor %}
@@ -38,14 +32,14 @@
 			{% endblock %}
 
 			<footer>
-				<p>&copy; Copyright De Boerderie.</p>
+				<p>Gemaakt door Lucas van Dijk. Code beschikbaar: <a href="https://bitbucket.org/sh4wn/mri-quiz">Bitbucket</a></p>
 			</footer>
 
 		</div>
 
 		<!-- JQuery/Bootstrap javascript so the page loads faster -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	</body>
 </html>
 

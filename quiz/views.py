@@ -2,6 +2,7 @@ import json
 
 from django.shortcuts import render
 from django.views import generic
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 
@@ -15,12 +16,15 @@ class QuizView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = generic.TemplateView.get_context_data(self, **kwargs)
 
+        print(self.request.session)
         if not 'quiz_queue' in self.request.session:
             self.request.session['quiz_queue'] = generate_random_queue()
             self.request.session['score'] = 0
             self.request.session['total'] = 0
 
         show_score = False
+
+        print(self.request.session['quiz_queue'])
 
         try:
             current_structure_id = self.request.session['quiz_queue'][0]
@@ -64,11 +68,14 @@ class QuizView(generic.FormView):
     def get_success_url(self):
         return reverse('quiz_view')
 
-class RestartView(generic.RedirectView):
-    def get_redirect_url(self, *args, **kwargs):
-        self.request.session['quiz_queue'] = generate_random_queue()
-        self.request.session['score'] = 0
-        self.request.session['total'] = 0
-
-        return reverse('quiz_view')
+class RestartView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        request.session.flush()
+        print("tekdf")
+        print(request.session)
+        request.session['quiz_queue'] = generate_random_queue()
+        request.session['score'] = 0
+        request.session['total'] = 0
         
+        return HttpResponseRedirect(reverse('quiz_view'))
+

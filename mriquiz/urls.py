@@ -24,6 +24,6 @@ urlpatterns += patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^restart/$', RestartView.as_view(), name="restart"),
+    url(r'^restart/', RestartView.as_view(), name="restart"),
     url(r'^$', QuizView.as_view(), name='quiz_view')
 )

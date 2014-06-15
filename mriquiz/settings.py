@@ -10,6 +10,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+from django.contrib.messages import constants as message_constants
+
 BASE_DIR = os.path.dirname(__file__)
 
 
@@ -97,3 +100,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
 )
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: 'alert-warning',
+    message_constants.INFO: 'alert-info',
+    message_constants.WARNING: 'alert-warning',
+    message_constants.SUCCESS: 'alert-success',
+    message_constants.ERROR: 'alert-danger'
+}
+
