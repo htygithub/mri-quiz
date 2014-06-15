@@ -25,8 +25,6 @@ class QuizView(generic.FormView):
 
         show_score = False
 
-        print(self.request.session['quiz_queue'])
-
         try:
             current_structure_id = self.request.session['quiz_queue'][0]
         except IndexError:
@@ -54,7 +52,7 @@ class QuizView(generic.FormView):
             current_structure = BrainStructure.objects.get(
                 pk=self.request.session['current_structure'])
 
-            if str(form.cleaned_data['answer']) == str(current_structure.latin_name):
+            if str(form.cleaned_data['answer'].latin_name) == str(current_structure.latin_name):
                 messages.success(self.request, "Heel goed! U heeft het juiste antwoord gegeven!")
                 self.request.session['score'] += 1
                 self.request.session['total'] += 1
@@ -72,8 +70,6 @@ class QuizView(generic.FormView):
 class RestartView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         request.session.flush()
-        print("tekdf")
-        print(request.session)
         request.session['quiz_queue'] = generate_random_queue()
         request.session['score'] = 0
         request.session['total'] = 0

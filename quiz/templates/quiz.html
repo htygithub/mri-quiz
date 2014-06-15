@@ -17,7 +17,7 @@
     <img src="{{ MEDIA_URL }}{{ current_mriset.image3 }}" alt="MRI Image 3" />
 </p>
 <h2>Selecteer de juiste bijbehorende structuur</h2>
-{{ form }}
+{{ form.as_p }}
 
 <p>
     <input type="submit" value="Check antwoord" />
