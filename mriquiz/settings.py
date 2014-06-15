@@ -109,3 +109,7 @@ MESSAGE_TAGS = {
     message_constants.ERROR: 'alert-danger'
 }
 
+try:
+    from mri_quiz.local_settings import *
+except ImportError:
+    pass
