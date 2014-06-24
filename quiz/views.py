@@ -36,7 +36,11 @@ class QuizView(generic.FormView):
 
     def get_form_class(self):
         self.quiz = self.get_quiz()
-        return create_quiz_form(self.quiz)
+
+        if not self.check_quiz() or 'restart' in self.request.GET:
+            self.init_quiz_session()
+
+        return create_quiz_form(self.get_current_question())
 
     def get_quiz(self):
         return get_object_or_404(Quiz, slug=self.args['quiz'])
@@ -69,8 +73,6 @@ class QuizView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = generic.TemplateView.get_context_data(self, **kwargs)
 
-        if not self.check_quiz() or 'restart' in self.request.GET:
-            self.init_quiz_session()
 
         show_score = False
 
@@ -115,6 +117,9 @@ class MRIQuizView(QuizView):
         return 'mri'
 
     def get_form_class(self):
+        if not self.check_quiz() or 'restart' in self.request.GET:
+            self.init_quiz_session()
+
         return MRIQuizSubmitForm
 
     def get_current_question(self):

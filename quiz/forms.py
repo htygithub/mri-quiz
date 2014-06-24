@@ -8,13 +8,13 @@ class MRIQuizSubmitForm(forms.Form):
         widget=forms.RadioSelect, empty_label=None
     )
 
-def create_quiz_form(quiz):
-    class QuizSubmitForm(forms.Form):
+def create_quiz_form(question):
+    class QuestionSubmitForm(forms.Form):
         answer = forms.ModelChoiceField(
-            queryset=quiz.answers.order_by('?'),
+            queryset=question.answers.order_by('?'),
             widget=forms.RadioSelect,
             empty_label=None
         )
 
-    return QuizSubmitForm
+    return QuestionSubmitForm
 
