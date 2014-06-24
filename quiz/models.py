@@ -55,6 +55,7 @@ class Quiz(models.Model):
     """
 
     name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200)
 
     def __str__(self):
         return self.name
@@ -68,11 +69,12 @@ class Question(models.Model):
     question = models.CharField(max_length=255)
     additional_info = models.TextField(blank=True)
     image = models.ImageField(upload_to=gen_filename, blank=True)
+    right_answer = models.ForeignKey('Answer')
 
     def __str__(self):
         return self.question
 
-class Answers(models.Model):
+class Answer(models.Model):
     """
         Possible answers for a question
     """
