@@ -49,27 +49,37 @@ class MRISet(models.Model):
     image2 = models.ImageField(upload_to=gen_filename)
     image3 = models.ImageField(upload_to=gen_filename)
 
-class Group(models.Model):
+class Quiz(models.Model):
     """
-        A group which holds multiple quizes
+        A collection of questions
     """
 
     name = models.CharField(max_length=200)
 
-class Quiz(models.Model):
+    def __str__(self):
+        return self.name
+
+class Question(models.Model):
     """
-        General multiple choice quiz
+        A general multiple choice question
     """
 
-    group = models.ForeignKey(Group, related_name="quizes")
+    quiz = models.ForeignKey(Quiz, related_name="questions")
     question = models.CharField(max_length=255)
+    additional_info = models.TextField(blank=True)
     image = models.ImageField(upload_to=gen_filename, blank=True)
+
+    def __str__(self):
+        return self.question
 
 class Answers(models.Model):
     """
-        Possible answers for a quiz
+        Possible answers for a question
     """
 
     quiz = models.ForeignKey(Quiz, related_name="answers")
     answer = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.answer
 
