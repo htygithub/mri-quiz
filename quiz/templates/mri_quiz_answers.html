@@ -1,0 +1,25 @@
+{% extends "sidebar.html" %}
+{% load quiz %}
+
+{% block sidebar %}
+{% answer_sidebar %}
+{% endblock %}
+
+{% block main %}
+<h1 class="page-header">MRI-plaatjes</h1>
+<p>
+    Hieronder staat onze collectie aan MRI-plaatjes. Sommige structuren hebben meerdere sets aan MRI-plaatjes.
+</p>
+
+{% for question in questions %}
+<h2>{{ question }}</h2>
+{% for mriset in question.mri_sets.all %}
+<p>
+    <img src="{{ MEDIA_URL }}{{ mriset.image1 }}" alt="MRI Image 1" />
+    <img src="{{ MEDIA_URL }}{{ mriset.image2 }}" alt="MRI Image 2" />
+    <img src="{{ MEDIA_URL }}{{ mriset.image3 }}" alt="MRI Image 3" />
+</p>
+{% endfor %}
+{% endfor %}
+{% endblock %}
+
