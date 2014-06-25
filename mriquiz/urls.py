@@ -25,12 +25,12 @@ urlpatterns += patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^quiz/(?P<quiz>[-\w]+)/restart/?$', RestartView.as_view(), name="restart"),
-    url(r'^quiz/(?P<quiz>[-\w]+)/?$', QuizView.as_view(), name='quiz_view'),
-    url(r'^mri-quiz/restart/?$', RestartView.as_view(), {'quiz': 'mri'}, name="restart_mri"),
-    url(r'^mri-quiz/?$', MRIQuizView.as_view(), name="mri_quiz_view"),
-    url(r'^answers/mri/?$', MRIAnswerView.as_view(), name="mri_answer_view"),
-    url(r'^answers/(?P<quiz>[-\w]+)/?$', AnswerView.as_view(), name="quiz_answer_view"),
-    url(r'^answers/?$', IndexView.as_view(template_name="answers.html"), name="answer_overview"),
+    url(r'^quiz/(?P<quiz>[-\w]+)/restart$', RestartView.as_view(), name="restart"),
+    url(r'^quiz/(?P<quiz>[-\w]+)$', QuizView.as_view(), name='quiz_view'),
+    url(r'^mri-quiz/restart$', RestartView.as_view(), {'quiz': 'mri'}, name="restart_mri"),
+    url(r'^mri-quiz$', MRIQuizView.as_view(), name="mri_quiz_view"),
+    url(r'^answers/mri$', MRIAnswerView.as_view(), name="mri_answer_view"),
+    url(r'^answers/(?P<quiz>[-\w]+)$', AnswerView.as_view(), name="quiz_answer_view"),
+    url(r'^answers$', IndexView.as_view(template_name="answers.html"), name="answer_overview"),
     url(r'^$', IndexView.as_view(), name="home")
 )
