@@ -1,4 +1,15 @@
 {% extends "sidebar.html" %}
+{% load quiz %}
+
+{% block sidebar %}
+<h3>MRI</h3>
+<ul class="nav nav-sidebar">
+    <li><a href="{% url "mri_quiz_view" %}">MRI Quiz</li></a>
+</ul>
+
+<h3>Thema's</h3>
+{% quiz_list %}
+{% endblock %}
 
 {% block main %}
 {% if show_score %}
