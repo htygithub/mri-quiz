@@ -34,7 +34,7 @@ def clone_question(modeladmin, request, queryset):
 
 class AnswerInline(admin.TabularInline):
     model = Answer
-    extra = 3
+    extra = 4
 
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
