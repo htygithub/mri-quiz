@@ -67,8 +67,8 @@ class Quiz(models.Model):
     class Meta:
         verbose_name_plural = 'Quizes'
 
-    def restart_url(self):
-        return reverse('restart_quiz', kwargs={'quiz': self.slug})
+    def get_absolute_url(self):
+        return reverse('quiz_view', kwargs={'quiz': self.slug})
 
     def __str__(self):
         return self.name

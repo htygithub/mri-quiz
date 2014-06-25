@@ -1,6 +1,7 @@
 {% extends "quiz.html" %}
 
 {% block restart_url %}{% url "restart_mri" %}{% endblock %}
+{% block page_header %}MRI Quiz{% endblock %}
 
 {% block form %}
 <form method="post" action="{% url "mri_quiz_view" %}">

@@ -1,0 +1,20 @@
+{% extends "master.html" %}
+
+{% block content %}
+<div class="row">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% block main %}
+    {% endblock main %}
+
+    <footer class="container">
+        <p>Gemaakt door Lucas van Dijk. Code beschikbaar: <a href="https://bitbucket.org/sh4wn/mri-quiz">Bitbucket</a></p>
+    </footer>
+</div>
+{% endblock %}

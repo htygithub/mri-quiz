@@ -12,15 +12,21 @@
 {% endblock %}
 
 {% block main %}
+<h1 class="page-header">{% block page_header %}{{ current_quiz.name }}{% endblock %}</h1>
+
+
 {% if show_score %}
-<h2>Je hebt deze quiz afgerond!</h2>
-<p>
-    Score: {{ request.session.score }} / {{ request.session.total }}
-</p>
+<div class="alert alert-info">
+    <h2>Je hebt deze quiz afgerond!</h2>
+    <p>
+        Score: {{ request.session.score }} / {{ request.session.total }}
+    </p>
+</div>
 <p>
     <a class="btn btn-primary" href="{% block restart_url %}{% url "restart" quiz=current_quiz.slug %}{% endblock %}">Restart</a>
 </p>
 {% else %}
+
 {% block form %}
 <form method="post" action="{% url "quiz_view" quiz=current_quiz.slug %}">
 <h2>{{ current_question.question }}</h2>
@@ -38,5 +44,6 @@
 {% csrf_token %}
 </form>
 {% endblock %}
+
 {% endif %}
 {% endblock %}
