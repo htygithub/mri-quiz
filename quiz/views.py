@@ -9,6 +9,11 @@ from django.contrib import messages
 from quiz.models import BrainStructure, Quiz, Question, generate_random_queue
 from quiz.forms import MRIQuizSubmitForm, create_quiz_form
 
+class IndexView(generic.ListView):
+    template_name = "home.html"
+    queryset = Quiz.objects.order_by('name')
+    context_object_name = "quiz_list"
+
 class QuizView(generic.FormView):
     template_name = "quiz.html"
 
@@ -69,7 +74,7 @@ class QuizView(generic.FormView):
 
     def get_right_answer(self):
         return self.quiz.right_answer
-            
+
     def get_context_data(self, **kwargs):
         context = generic.TemplateView.get_context_data(self, **kwargs)
 
@@ -139,7 +144,7 @@ class MRIQuizView(QuizView):
         context = QuizView.get_context_data(self, **kwargs)
 
         if not context['show_score']:
-            context['current_mriset'] = 
+            context['current_mriset'] = \
                 self.get_current_question().mri_sets.order_by('?').first()
 
         return context
@@ -153,6 +158,6 @@ class RestartView(generic.View):
         request.session['quiz_queue'] = generate_random_queue()
         request.session['score'] = 0
         request.session['total'] = 0
-        
+
         return HttpResponseRedirect(reverse('quiz_view'))
 
