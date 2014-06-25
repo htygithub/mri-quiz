@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>LUMC Geneeskunde 66 structuren MRI quiz</title>
+		<title>LUMC Hersenen en Aansturing tentamenoefening</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		{% block css %}
-		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" />
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" />
 		{% endblock %}
 
 		{% block javascript %}
@@ -17,25 +17,29 @@
 	</head>
 
 	<body>
-		<div class="container">
-            <h1>66 structuren MRI quiz</h1>
-
-            {% if messages %}
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">
-                    {{ message }}
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url "home" %}">LUMC Hersenen en Aansturing tentamenoefening</a>
                 </div>
-            {% endfor %}
-            {% endif %}
-
-			{% block content %}
-			{% endblock %}
-
-			<footer>
-				<p>Gemaakt door Lucas van Dijk. Code beschikbaar: <a href="https://bitbucket.org/sh4wn/mri-quiz">Bitbucket</a></p>
-			</footer>
-
-		</div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url "home" %}">Home</a></li>
+                        <li><a href="#">Antwoorden</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            {% block content %}
+            {% endblock %}
+        </div>
 
 		<!-- JQuery/Bootstrap javascript so the page loads faster -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>

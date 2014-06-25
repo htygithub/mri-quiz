@@ -24,8 +24,9 @@ urlpatterns += patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^restart/', RestartView.as_view(), name="restart"),
+    url(r'^quiz/(?P<quiz>[-\w]+)/restart/?$', RestartView.as_view(), name="restart"),
     url(r'^quiz/(?P<quiz>[-\w]+)/?$', QuizView.as_view(), name='quiz_view'),
+    url(r'^mri-quiz/restart/?$', RestartView.as_view(), {'quiz': 'mri'}, name="restart_mri"),
     url(r'^mri-quiz/?$', MRIQuizView.as_view(), name="mri_quiz_view"),
     url(r'^$', IndexView.as_view(), name="home")
 )

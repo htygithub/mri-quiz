@@ -14,22 +14,14 @@ class IndexView(generic.ListView):
     queryset = Quiz.objects.order_by('name')
     context_object_name = "quiz_list"
 
-class QuizView(generic.FormView):
-    template_name = "quiz.html"
-
-    def __init__(self, *args, **kwargs):
-        self.current_question = None
-        self.quiz = None
-
-        generic.FormView.__init__(self, *args, **kwargs)
-
-    def check_quiz():
+class QuizMixin:
+    def check_quiz(self):
         return (
             'quiz_data' in self.request.session and
             self.get_quiz_id() in self.request.session['quiz_data']
         )
 
-    def init_quiz_session():
+    def init_quiz_session(self):
         if not 'quiz_data' in self.request.session:
             self.request.session['quiz_data'] = {}
 
@@ -39,6 +31,31 @@ class QuizView(generic.FormView):
             'total': 0
         }
 
+    def get_quiz(self):
+        return get_object_or_404(Quiz, slug=self.kwargs['quiz'])
+
+    def get_quiz_id(self):
+        return self.get_quiz().id
+
+    def update_queue(self):
+        return self.request.session['quiz_data'][self.get_quiz_id()]['queue'].pop(0)
+
+    def update_score(self, success):
+        self.request.session['quiz_data'][self.get_quiz_id()]['total'] += 1
+
+        if success:
+            self.request.session['quiz_data'][self.get_quiz_id()]['score'] += 1
+
+
+class QuizView(generic.FormView, QuizMixin):
+    template_name = "quiz.html"
+
+    def __init__(self, *args, **kwargs):
+        self.current_question = None
+        self.quiz = None
+
+        generic.FormView.__init__(self, *args, **kwargs)
+
     def get_form_class(self):
         self.quiz = self.get_quiz()
 
@@ -46,9 +63,6 @@ class QuizView(generic.FormView):
             self.init_quiz_session()
 
         return create_quiz_form(self.get_current_question())
-
-    def get_quiz(self):
-        return get_object_or_404(Quiz, slug=self.args['quiz'])
 
     def get_quiz_id(self):
         return self.quiz.id
@@ -60,25 +74,14 @@ class QuizView(generic.FormView):
 
         return self.current_question
 
-    def update_queue(self):
-        return self.request.session['quiz_data'][self.get_quiz_id()]['queue'].pop(0)
-
-    def update_score(self, success):
-        self.request.session['quiz_data'][self.get_quiz_id()]['total'] += 1
-
-        if success:
-            self.request.session['quiz_data'][self.get_quiz_id()]['score'] += 1
-
     def check_answer(self, answer):
-        return answer == self.quiz.right_answer
+        return answer == self.get_current_question().right_answer
 
     def get_right_answer(self):
-        return self.quiz.right_answer
+        return self.get_current_question().right_answer
 
     def get_context_data(self, **kwargs):
         context = generic.TemplateView.get_context_data(self, **kwargs)
-
-
         show_score = False
 
         try:
@@ -87,6 +90,7 @@ class QuizView(generic.FormView):
             show_score = True
 
         context['show_score'] = show_score
+        context['current_quiz'] = self.quiz
 
         if show_score:
             context['current_question'] = None
@@ -110,7 +114,7 @@ class QuizView(generic.FormView):
         return generic.FormView.form_valid(self, form)
 
     def get_success_url(self):
-        return reverse('quiz_view', quiz=self.quiz.slug)
+        return reverse('quiz_view', kwargs={'quiz': self.quiz.slug})
 
 class MRIQuizView(QuizView):
     template_name = "mri_quiz.html"
@@ -152,12 +156,20 @@ class MRIQuizView(QuizView):
     def get_success_url(self):
         return reverse('mri_quiz_view')
 
-class RestartView(generic.View):
+class RestartView(generic.View, QuizMixin):
+
+    def get_quiz_id(self):
+        if self.kwargs['quiz'] == 'mri':
+            return 'mri'
+        else:
+            return QuizMixin.get_quiz_id(self)
+
     def dispatch(self, request, *args, **kwargs):
         request.session.flush()
-        request.session['quiz_queue'] = generate_random_queue()
-        request.session['score'] = 0
-        request.session['total'] = 0
+        self.init_quiz_session()
 
-        return HttpResponseRedirect(reverse('quiz_view'))
+        if kwargs['quiz'] == 'mri':
+            return HttpResponseRedirect(reverse('mri_quiz_view'))
+        else:
+            return HttpResponseRedirect(reverse('quiz_view', kwargs=kwargs))
 

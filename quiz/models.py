@@ -20,8 +20,11 @@ def get_structure_names():
 
     return names
 
-def generate_random_queue():
-    query = BrainStructure.objects.order_by('?').all()
+def generate_random_queue(quiz_id):
+    if quiz_id == 'mri':
+        query = BrainStructure.objects.order_by('?').all()
+    else:
+        query = Question.objects.filter(quiz__id=quiz_id).order_by('?')
 
     ids = []
 
@@ -65,7 +68,7 @@ class Quiz(models.Model):
         verbose_name_plural = 'Quizes'
 
     def restart_url(self):
-        return reverse('restart_quiz', quiz=self.slug)
+        return reverse('restart_quiz', kwargs={'quiz': self.slug})
 
     def __str__(self):
         return self.name
