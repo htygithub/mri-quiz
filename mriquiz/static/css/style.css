@@ -43,6 +43,10 @@ body {
 }
 
 /* Sidebar navigation */
+.sidebar h2 {
+    margin-top: 0px;
+}
+
 .nav-sidebar {
   margin-right: -21px; /* 20px padding + 1px border */
   margin-bottom: 20px;

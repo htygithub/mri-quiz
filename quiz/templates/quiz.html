@@ -2,6 +2,7 @@
 {% load quiz %}
 
 {% block sidebar %}
+<h2>Quizes</h2>
 <h3>MRI</h3>
 <ul class="nav nav-sidebar">
     <li><a href="{% url "mri_quiz_view" %}">MRI Quiz</li></a>
@@ -17,9 +18,11 @@
 
 {% if show_score %}
 <div class="alert alert-info">
-    <h2>Je hebt deze quiz afgerond!</h2>
+    <h3>Je hebt deze quiz afgerond!</h3>
     <p>
-        Score: {{ request.session.score }} / {{ request.session.total }}
+        {% block score %}
+        Score: {% quiz_score current_quiz %} / {% quiz_total current_quiz %}
+        {% endblock %}
     </p>
 </div>
 <p>

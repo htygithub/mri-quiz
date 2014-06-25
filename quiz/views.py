@@ -5,6 +5,7 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import messages
+from django.forms import Form
 
 from quiz.models import BrainStructure, Quiz, Question, generate_random_queue
 from quiz.forms import MRIQuizSubmitForm, create_quiz_form
@@ -31,13 +32,16 @@ class QuizMixin:
             'total': 0
         }
 
+        self.request.session.modified = True
+
     def get_quiz(self):
         return get_object_or_404(Quiz, slug=self.kwargs['quiz'])
 
     def get_quiz_id(self):
-        return self.get_quiz().id
+        return str(self.get_quiz().id)
 
     def update_queue(self):
+        self.request.session.modified = True
         return self.request.session['quiz_data'][self.get_quiz_id()]['queue'].pop(0)
 
     def update_score(self, success):
@@ -46,29 +50,39 @@ class QuizMixin:
         if success:
             self.request.session['quiz_data'][self.get_quiz_id()]['score'] += 1
 
+        self.request.session.modified = True
+
 
 class QuizView(generic.FormView, QuizMixin):
     template_name = "quiz.html"
 
-    def __init__(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.current_question = None
         self.quiz = None
 
-        generic.FormView.__init__(self, *args, **kwargs)
+        return generic.FormView.dispatch(self, request, *args, **kwargs)
 
     def get_form_class(self):
         self.quiz = self.get_quiz()
 
         if not self.check_quiz() or 'restart' in self.request.GET:
+            print("initialize")
             self.init_quiz_session()
 
-        return create_quiz_form(self.get_current_question())
+        try:
+            form_class = create_quiz_form(self.get_current_question())
+        except IndexError:
+            form_class = Form
+
+        return form_class
 
     def get_quiz_id(self):
-        return self.quiz.id
+        return str(self.quiz.id)
 
-    def get_current_question(self):
-        if not self.current_question:
+    def get_current_question(self, force=False):
+        print(self.request.session['quiz_data'][self.get_quiz_id()]['queue'])
+        if not self.current_question or force:
+            print("select question")
             current_id = self.request.session['quiz_data'][self.get_quiz_id()]['queue'][0]
             self.current_question = Question.objects.get(pk=current_id)
 
@@ -85,7 +99,7 @@ class QuizView(generic.FormView, QuizMixin):
         show_score = False
 
         try:
-            current_question = self.get_current_question()
+            current_question = self.get_current_question(True)
         except IndexError:
             show_score = True
 
@@ -131,8 +145,8 @@ class MRIQuizView(QuizView):
 
         return MRIQuizSubmitForm
 
-    def get_current_question(self):
-        if not self.current_question:
+    def get_current_question(self, force=False):
+        if not self.current_question or force:
             current_id = self.request.session['quiz_data'][self.get_quiz_id()]['queue'][0]
             self.current_question = BrainStructure.objects.get(id=current_id)
 
@@ -165,7 +179,6 @@ class RestartView(generic.View, QuizMixin):
             return QuizMixin.get_quiz_id(self)
 
     def dispatch(self, request, *args, **kwargs):
-        request.session.flush()
         self.init_quiz_session()
 
         if kwargs['quiz'] == 'mri':

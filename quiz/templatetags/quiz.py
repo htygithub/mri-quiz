@@ -11,3 +11,26 @@ def quiz_list():
     return {
         'quizes': quizes
     }
+
+@register.simple_tag(takes_context=True)
+def quiz_score(context, quiz):
+    session = context['request'].session
+
+    if not hasattr(quiz, 'id'):
+        quiz_id = 'mri'
+    else:
+        quiz_id = str(quiz.id)
+
+    return session['quiz_data'][quiz_id]['score']
+
+@register.simple_tag(takes_context=True)
+def quiz_total(context, quiz):
+    session = context['request'].session
+
+    if not hasattr(quiz, 'id'):
+        quiz_id = 'mri'
+    else:
+        quiz_id = str(quiz.id)
+
+    return session['quiz_data'][quiz_id]['total']
+
