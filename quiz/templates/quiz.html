@@ -2,14 +2,7 @@
 {% load quiz %}
 
 {% block sidebar %}
-<h2>Quizes</h2>
-<h3>MRI</h3>
-<ul class="nav nav-sidebar">
-    <li><a href="{% url "mri_quiz_view" %}">MRI Quiz</li></a>
-</ul>
-
-<h3>Thema's</h3>
-{% quiz_list %}
+{% quiz_sidebar %}
 {% endblock %}
 
 {% block main %}

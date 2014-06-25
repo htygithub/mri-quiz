@@ -4,13 +4,15 @@ from quiz.models import Quiz
 
 register = template.Library()
 
-@register.inclusion_tag("quiz/quiz_list.html")
 def quiz_list():
     quizes = Quiz.objects.order_by('name')
 
     return {
         'quizes': quizes
     }
+
+register.inclusion_tag("quiz/quiz_sidebar.html", name="quiz_sidebar")(quiz_list)
+register.inclusion_tag("quiz/answer_sidebar.html", name="answer_sidebar")(quiz_list)
 
 @register.simple_tag(takes_context=True)
 def quiz_score(context, quiz):

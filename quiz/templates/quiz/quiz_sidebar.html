@@ -1,3 +1,10 @@
+<h2>Quizes</h2>
+<h3>MRI</h3>
+<ul class="nav nav-sidebar">
+    <li><a href="{% url "mri_quiz_view" %}">MRI plaatjes quiz</a></li>
+</ul>
+
+<h3>Thema's</h3>
 <ul class="nav nav-sidebar">
     {% for quiz in quizes %}
     <li><a href="{% url "quiz_view" quiz=quiz.slug %}">{{ quiz }}</a></li>

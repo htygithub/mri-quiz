@@ -1,0 +1,12 @@
+<h2>Antwoorden</h2>
+<h3>MRI</h3>
+<ul class="nav nav-sidebar">
+    <li><a href="{% url "mri_answer_view" %}">MRI plaatjes</a></li>
+</ul>
+
+<h3>Thema's</h3>
+<ul class="nav nav-sidebar">
+    {% for quiz in quizes %}
+    <li><a href="{% url "quiz_answer_view" quiz=quiz.slug %}">{{ quiz }}</a></li>
+    {% endfor %}
+</ul>

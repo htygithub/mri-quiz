@@ -1,0 +1,35 @@
+{% extends "sidebar.html" %}
+{% load quiz %}
+
+{% block sidebar %}
+{% answer_sidebar %}
+{% endblock %}
+
+{% block main %}
+<h1 class="page-header">{{ current_quiz.name }}</h1>
+<p>
+    Deze quiz bevat {{ num_questions }} vra{{ num_questions|pluralize:"ag,gen" }}.
+    De juiste antwoorden zijn dikgedrukt.
+</p>
+
+{% for question in questions %}
+<h2>{{ question }}</h2>
+{% if current_question.image %}
+<p>
+    <img src="{{ MEDIA_URL }}{{ current_question.image }}" alt="Quiz Image" />
+</p>
+{% endif %}
+<ul>
+    {% for answer in question.answers.all %}
+    <li>
+        {% if question.right_answer == answer %}
+        <strong>{{ answer }}</strong>
+        {% else %}
+        {{ answer }}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endfor %}
+{% endblock %}
+

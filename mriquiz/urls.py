@@ -5,7 +5,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-from quiz.views import QuizView, MRIQuizView, RestartView, IndexView
+from quiz.views import QuizView, MRIQuizView, RestartView, IndexView, \
+    AnswerView, MRIAnswerView
 
 urlpatterns = []
 
@@ -30,6 +31,6 @@ urlpatterns += patterns('',
     url(r'^mri-quiz/?$', MRIQuizView.as_view(), name="mri_quiz_view"),
     url(r'^answers/mri/?$', MRIAnswerView.as_view(), name="mri_answer_view"),
     url(r'^answers/(?P<quiz>[-\w]+)/?$', AnswerView.as_view(), name="quiz_answer_view"),
-    url(r'^answers/?$', IndexView.as_view(template_name="answers.html"), name="answers_overview"),
+    url(r'^answers/?$', IndexView.as_view(template_name="answers.html"), name="answer_overview"),
     url(r'^$', IndexView.as_view(), name="home")
 )
