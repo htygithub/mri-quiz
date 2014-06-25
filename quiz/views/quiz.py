@@ -1,57 +1,12 @@
-import json
-
-from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.forms import Form
 
-from quiz.models import BrainStructure, Quiz, Question, generate_random_queue
+from quiz.views.base import QuizMixin
+from quiz.models import BrainStructure, Question
 from quiz.forms import MRIQuizSubmitForm, create_quiz_form
-
-class IndexView(generic.ListView):
-    template_name = "home.html"
-    queryset = Quiz.objects.order_by('name')
-    context_object_name = "quiz_list"
-
-class QuizMixin:
-    def check_quiz(self):
-        return (
-            'quiz_data' in self.request.session and
-            self.get_quiz_id() in self.request.session['quiz_data']
-        )
-
-    def init_quiz_session(self):
-        if not 'quiz_data' in self.request.session:
-            self.request.session['quiz_data'] = {}
-
-        self.request.session['quiz_data'][self.get_quiz_id()] = {
-            'queue': generate_random_queue(self.get_quiz_id()),
-            'score': 0,
-            'total': 0
-        }
-
-        self.request.session.modified = True
-
-    def get_quiz(self):
-        return get_object_or_404(Quiz, slug=self.kwargs['quiz'])
-
-    def get_quiz_id(self):
-        return str(self.get_quiz().id)
-
-    def update_queue(self):
-        self.request.session.modified = True
-        return self.request.session['quiz_data'][self.get_quiz_id()]['queue'].pop(0)
-
-    def update_score(self, success):
-        self.request.session['quiz_data'][self.get_quiz_id()]['total'] += 1
-
-        if success:
-            self.request.session['quiz_data'][self.get_quiz_id()]['score'] += 1
-
-        self.request.session.modified = True
-
 
 class QuizView(generic.FormView, QuizMixin):
     template_name = "quiz.html"
