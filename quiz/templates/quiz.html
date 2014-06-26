@@ -1,5 +1,5 @@
 {% extends "sidebar.html" %}
-{% load quiz %}
+{% load quiz markup %}
 
 {% block sidebar %}
 {% quiz_sidebar %}
@@ -26,6 +26,11 @@
 {% block form %}
 <form method="post" action="{% url "quiz_view" quiz=current_quiz.slug %}">
 <h2>{{ current_question.question }}</h2>
+
+{% if current_question.additional_info %}
+{{ current_question.additional_info|markdown }}
+{% endif %}
+
 {% if current_question.image %}
 <p>
     <img src="{{ MEDIA_URL }}{{ current_question.image }}" alt="Quiz Image" />
