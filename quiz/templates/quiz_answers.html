@@ -1,5 +1,5 @@
 {% extends "sidebar.html" %}
-{% load quiz markdown_deux_tags %}
+{% load quiz %}
 
 {% block sidebar %}
 {% answer_sidebar %}
@@ -16,7 +16,7 @@
 <h2>{{ question }}</h2>
 
 {% if question.additional_info %}
-{{ question.additional_info|markdown }}
+{{ question.additional_info|linebreaks }}
 {% endif %}
 
 {% if question.image %}
