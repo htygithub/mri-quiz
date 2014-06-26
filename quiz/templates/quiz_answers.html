@@ -14,9 +14,9 @@
 
 {% for question in questions %}
 <h2>{{ question }}</h2>
-{% if current_question.image %}
+{% if question.image %}
 <p>
-    <img src="{{ MEDIA_URL }}{{ current_question.image }}" alt="Quiz Image" />
+    <img src="{{ MEDIA_URL }}{{ question.image }}" alt="Quiz Image" />
 </p>
 {% endif %}
 <ul>
