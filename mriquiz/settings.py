@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.markup',
+    'markdown_deux',
     'mriquiz',
     'quiz',
 )
